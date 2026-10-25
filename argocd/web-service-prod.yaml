@@ -1,0 +1,25 @@
+# Prod is pinned to a release tag and synced manually after change approval.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: web-service-prod
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: platform
+  source:
+    repoURL: https://github.com/ebrahimsidat/kubernetes-platform-gitops.git
+    targetRevision: v1.0.0
+    path: charts/web-service
+    helm:
+      releaseName: web-service
+      valueFiles:
+        - ../../environments/values-prod.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: web-prod
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

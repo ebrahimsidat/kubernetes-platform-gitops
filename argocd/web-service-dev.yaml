@@ -1,0 +1,34 @@
+# Dev tracks main and self-heals automatically.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: web-service-dev
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: platform
+  source:
+    repoURL: https://github.com/ebrahimsidat/kubernetes-platform-gitops.git
+    targetRevision: main
+    path: charts/web-service
+    helm:
+      releaseName: web-service
+      valueFiles:
+        - ../../environments/values-dev.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: web-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m

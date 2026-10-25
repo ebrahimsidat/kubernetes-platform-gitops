@@ -1,0 +1,40 @@
+# AppProject restricting what the platform applications may deploy and where.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: platform
+  namespace: argocd
+spec:
+  description: Platform web services managed through GitOps.
+  sourceRepos:
+    - https://github.com/ebrahimsidat/kubernetes-platform-gitops.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: web-dev
+    - server: https://kubernetes.default.svc
+      namespace: web-prod
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ServiceAccount
+    - group: apps
+      kind: Deployment
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+    - group: policy
+      kind: PodDisruptionBudget
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+    - group: networking.k8s.io
+      kind: Ingress
+  roles:
+    - name: read-only
+      description: Read-only access for auditors and on-call engineers.
+      policies:
+        - p, proj:platform:read-only, applications, get, platform/*, allow

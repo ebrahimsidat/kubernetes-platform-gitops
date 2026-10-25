@@ -1,0 +1,8 @@
+# Bootstrap: kubectl apply -k argocd/
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: argocd
+resources:
+  - project.yaml
+  - web-service-dev.yaml
+  - web-service-prod.yaml
