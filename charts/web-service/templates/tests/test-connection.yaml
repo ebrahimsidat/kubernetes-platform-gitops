@@ -6,7 +6,8 @@ metadata:
     {{- include "web-service.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
-    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    # Keep the pod after the run so `helm test --logs` can read it; it is replaced on the next run.
+    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   restartPolicy: Never
   automountServiceAccountToken: false
