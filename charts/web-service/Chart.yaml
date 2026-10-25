@@ -1,0 +1,16 @@
+apiVersion: v2
+name: web-service
+description: Production-ready Helm chart for a stateless HTTP service, hardened for Kubernetes and OpenShift.
+type: application
+version: 1.0.0
+appVersion: "1.27"
+kubeVersion: ">=1.27.0-0"
+keywords:
+  - web
+  - stateless
+  - hardened
+  - openshift
+maintainers:
+  - name: Ebrahim Sidat
+    url: https://github.com/ebrahimsidat
+home: https://github.com/ebrahimsidat/kubernetes-platform-gitops
