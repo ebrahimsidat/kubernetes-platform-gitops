@@ -1,0 +1,14 @@
+---
+extends: default
+
+ignore: |
+  charts/web-service/templates/
+
+rules:
+  line-length:
+    max: 140
+  truthy:
+    allowed-values: ["true", "false", "on"]
+  comments:
+    min-spaces-from-content: 1
+  document-start: disable

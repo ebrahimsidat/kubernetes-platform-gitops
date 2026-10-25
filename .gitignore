@@ -1,0 +1,5 @@
+*.tgz
+.DS_Store
+.idea/
+.vscode/
+rendered/
