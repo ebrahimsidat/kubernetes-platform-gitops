@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "web-service.fullname" . }}-test-connection"
+  labels:
+    {{- include "web-service.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  restartPolicy: Never
+  automountServiceAccountToken: false
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: http-check
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - |
+          wget -qO- http://{{ include "web-service.fullname" . }}:{{ .Values.service.port }}/healthz | grep -q ok
+          wget -qO- http://{{ include "web-service.fullname" . }}:{{ .Values.service.port }}/ | grep -q "{{ .Values.content.title }}"
+          echo "service responded correctly"
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: ["ALL"]
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          memory: 32Mi
