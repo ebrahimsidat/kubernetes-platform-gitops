@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "web-service.fullname" . }}
+  labels:
+    {{- include "web-service.labels" . | nindent 4 }}
+data:
+  default.conf: |
+    server {
+        listen       {{ .Values.containerPort }};
+        server_name  _;
+
+        location = /healthz {
+            access_log off;
+            default_type text/plain;
+            return 200 "ok\n";
+        }
+
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html;
+        }
+    }
+  index.html: |
+    <!doctype html>
+    <html lang="en">
+      <head><meta charset="utf-8"><title>{{ .Values.content.title }}</title></head>
+      <body>
+        <h1>{{ .Values.content.title }}</h1>
+        <p>{{ .Values.content.message }}</p>
+        <p>Release {{ .Release.Name }} in namespace {{ .Release.Namespace }}, chart {{ include "web-service.chart" . }}.</p>
+      </body>
+    </html>
