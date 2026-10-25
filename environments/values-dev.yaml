@@ -1,0 +1,22 @@
+# Development: single replica, small footprint, no autoscaling.
+replicaCount: 1
+
+content:
+  title: "web-service (dev)"
+  message: "Development environment. Deployed by Argo CD from main."
+
+resources:
+  requests:
+    cpu: 25m
+    memory: 32Mi
+  limits:
+    memory: 96Mi
+
+autoscaling:
+  enabled: false
+
+podDisruptionBudget:
+  enabled: false
+
+topologySpreadConstraints:
+  enabled: false
